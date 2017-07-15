@@ -49,7 +49,7 @@ async function loadAtmContract() {
   const Atm = contract(json);
   Atm.setProvider(provider);
   const atmContract = await Atm.deployed();
-  const totalSupply = await atmContract.totalSupply()
+  const totalSupply = await atmContract.totalSupply();
   console.log(`Contract supply ${totalSupply.toString()}`);
   return atmContract;
 }
@@ -69,20 +69,25 @@ async function main() {
   const atm = await loadAtmContract();
 
   ks.generateNewAddress(pwDerivedKey, 1);
-  const address = util.addHexPrefix(ks.getAddresses()[0]);
+  const owner = util.addHexPrefix(ks.getAddresses()[0]);
   const receiver = util.addHexPrefix(ks.getAddresses()[1]);
 
-  console.log(`Sender address is ${address} and priv is ${ks.exportPrivateKey(address, pwDerivedKey)}`);
+  console.log(`Sender owner is ${owner} and priv is ${ks.exportPrivateKey(owner, pwDerivedKey)}`);
+
+  const senderBalance = await atm.balanceOf(owner);
+  const receiverBalance = await atm.balanceOf(receiver);
+
+  console.log(`senderBalance is ${senderBalance} and receiverBalance is ${receiverBalance}`);
 
   const txOptions = {
-    gasPrice: 10000000000000,
-    gasLimit: 3000000,
+    gasPrice: 0,
+    gasLimit: 47123880000,
     value: 0,
     to: atm.address,
-    nonce: web3.eth.getTransactionCount(util.addHexPrefix(address)), // we need to set correct nonce
+    nonce: web3.eth.getTransactionCount(util.addHexPrefix(owner)), // we need to set correct nonce
   };
-  var tx = txutils.functionTx(atm.abi, 'transferFrom', [address, receiver, 100], txOptions);
-  var signedTx = signing.signTx(ks, pwDerivedKey, tx, util.stripHexPrefix(address));
+  var tx = txutils.functionTx(atm.abi, 'transferFrom', [owner, receiver, 100], txOptions);
+  var signedTx = signing.signTx(ks, pwDerivedKey, tx, util.stripHexPrefix(owner));
   console.log('Signed tx: ' + signedTx);
 
   await sendTx(signedTx);
