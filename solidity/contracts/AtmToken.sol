@@ -1,7 +1,7 @@
 pragma solidity ^0.4.4;
-import "zeppelin-solidity/contracts/token/StandardToken.sol";
+import "zeppelin-solidity/contracts/token/BasicToken.sol";
 
-contract AtmToken is StandardToken {
+contract AtmToken is BasicToken {
   string public name = "AtmToken";
   string public symbol = "ATM";
   uint public decimals = 0;

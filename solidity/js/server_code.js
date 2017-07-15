@@ -80,17 +80,26 @@ async function main() {
   console.log(`senderBalance is ${senderBalance} and receiverBalance is ${receiverBalance}`);
 
   const txOptions = {
-    gasPrice: 0,
+    gasPrice: 10,
     gasLimit: 47123880000,
     value: 0,
     to: atm.address,
     nonce: web3.eth.getTransactionCount(util.addHexPrefix(owner)), // we need to set correct nonce
   };
-  var tx = txutils.functionTx(atm.abi, 'transferFrom', [owner, receiver, 100], txOptions);
+
+  console.log(`Contract is located at ${atm.address}`)
+  var tx = txutils.functionTx(atm.abi, 'transfer', [receiver, 100], txOptions);
+  console.log(tx)
   var signedTx = signing.signTx(ks, pwDerivedKey, tx, util.stripHexPrefix(owner));
   console.log('Signed tx: ' + signedTx);
 
   await sendTx(signedTx);
+
+
+  const senderBalance2 = await atm.balanceOf(owner);
+  const receiverBalance2 = await atm.balanceOf(receiver);
+
+  console.log(`senderBalance is ${senderBalance2} and receiverBalance is ${receiverBalance2}`);
 }
 
 main().catch(err => console.log(err));
