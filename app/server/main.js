@@ -1,5 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 
+import {watch_chain} from '../imports/server/blockchain_importer'
+
 Meteor.startup(() => {
-  // code to run on server at startup
+  watch_chain();
 });

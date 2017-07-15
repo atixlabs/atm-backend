@@ -1,7 +1,7 @@
 'use strict';
 
 import { HTTP } from 'meteor/http'
-import { build_tx, push_tx } from './tx_helper.js'
+import { build_tx, push_tx } from '../imports/server/blockchain_tools'
 
 function toJson(res, buildResultFn) {
   try {
