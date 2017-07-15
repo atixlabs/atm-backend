@@ -56,3 +56,9 @@ typings/
 
 # dotenv environment variables file
 .env
+
+.eslintrc.json
+.idea
+app/.meteor/local
+app/node_modules
+*.orig
