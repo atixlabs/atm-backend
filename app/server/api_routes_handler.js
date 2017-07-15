@@ -36,18 +36,31 @@ function healthcheck(params, req, res) {
   });
 }
 
+function tx_build(params, req, res) {
+
+  console.log(`tx_build`);
+
+  toJson(res, () => {
+    const { from, to, amount } = req.body;
+    if (!from || !to || !amount) {
+      throw new Meteor.Error(403, 'Malformed request body, expecting {from, to, amount}');
+    }
+    return { raw_tx : `This is a Tx for ${JSON.stringify(req.body)}` };
+  });
+}
+
 function tx_push(params, req, res) {
 
   console.log(`txs_push`);
 
   toJson(res, () => {
-    const { raw_tx, internal } = req.body;
-    if (!raw_tx) {
-      throw new Meteor.Error(403, 'Malformed request body, missing raw_tx');
+    const { signed_tx, internal } = req.body;
+    if (!signed_tx) {
+      throw new Meteor.Error(403, 'Malformed request body, missing signed_tx');
     }
     if(!internal) {
       HTTP.call('POST', 'http://localhost:3000/api/v1/tx/push', {
-        data: { raw_tx: raw_tx, internal: true },
+        data: { signed_tx: signed_tx, internal: true },
         headers: { 'Content-Type': 'application/json' }
       }, (error, result) => {
         if(!error) {
@@ -61,5 +74,6 @@ function tx_push(params, req, res) {
 
 module.exports = {
   healthcheck: healthcheck,
-  tx_push: tx_push
+  tx_push: tx_push,
+  tx_build: tx_build
 }
