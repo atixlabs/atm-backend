@@ -65,7 +65,6 @@ async function main() {
     mnemonic,
     privateKey,
     publicKey,
-    wallet
   } = await preloadedWallet(); /*await createWallet()*/;
 
   const owner = util.bufferToHex(util.publicToAddress(publicKey));
@@ -73,29 +72,37 @@ async function main() {
 
   console.log(`Sender is ${owner} and receiver is ${receiver}`);
 
-  
+  // Load contract info and ABI in order to be ablel to use it  
   const atm = await loadAtmContract();
-
+  // Check balances before doing anything
   const senderBalance = await atm.balanceOf(owner);
   const receiverBalance = await atm.balanceOf(receiver);
-
   console.log(`senderBalance is ${senderBalance} and receiverBalance is ${receiverBalance}`);
 
+  // Create transaction options, this should probably be in a settings file.
   const txOptions = {
     gasPrice: 10,
-    gasLimit: 47123880000,
+    gasLimit: 47123880000, //FIXME there is an RPC method to estimate gas
     value: 0,
     to: atm.address,
-    nonce: web3.eth.getTransactionCount(util.addHexPrefix(owner)), // we need to set correct nonce
+    nonce: web3.eth.getTransactionCount(util.addHexPrefix(owner)), // getting transaction count is the same as querying for latest nonce
   };
+
+  // This is where contract is located. It's extracted from contract Object
   console.log(`Contract is located at ${atm.address}`)
 
+  // Create a contract call function which will invoke transfer method with params "receiver" and 100
+  // The result is RLP serialized
   var rlpTx = txutils.functionTx(atm.abi, 'transfer', [receiver, 100], txOptions);
+
+  // Construct the EthereumTx based on serialized one
   const tx = new EthereumTx(Buffer.from(util.stripHexPrefix(rlpTx), 'hex'));
+  // Sign and send!
   tx.sign(Buffer.from(util.stripHexPrefix(privateKey), 'hex'));
   const signedTx = tx.serialize();
   await sendTx(signedTx);
   
+  // Check balances again
   const senderBalance2 = await atm.balanceOf(owner);
   const receiverBalance2 = await atm.balanceOf(receiver);
   console.log(`senderBalance is ${senderBalance2} and receiverBalance is ${receiverBalance2}`);
