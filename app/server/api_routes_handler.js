@@ -1,7 +1,7 @@
 'use strict';
 
 import { HTTP } from 'meteor/http'
-import { run } from './tx_helper.js'
+import { build_tx, push_tx } from './tx_helper.js'
 
 function toJson(res, buildResultFn) {
   try {
@@ -46,8 +46,8 @@ function tx_build(params, req, res) {
     if (!from || !to || !amount) {
       throw new Meteor.Error(403, 'Malformed request body, expecting {from, to, amount}');
     }
-    run()
-    return { raw_tx : `This is a Tx for ${JSON.stringify(req.body)}` };
+    const rlpTx = build_tx(from, to, amount);
+    return Object.assign({}, req.body, { raw_tx: rlpTx});
   });
 }
 
@@ -56,21 +56,12 @@ function tx_push(params, req, res) {
   console.log(`txs_push`);
 
   toJson(res, () => {
-    const { signed_tx, internal } = req.body;
+    const { signed_tx, from, to } = req.body;
     if (!signed_tx) {
       throw new Meteor.Error(403, 'Malformed request body, missing signed_tx');
     }
-    if(!internal) {
-      HTTP.call('POST', 'http://localhost:3000/api/v1/tx/push', {
-        data: { signed_tx: signed_tx, internal: true },
-        headers: { 'Content-Type': 'application/json' }
-      }, (error, result) => {
-        if(!error) {
-          console.log('transaction accepted', result);
-        }
-      });
-    }
-    return { message : "transaction pushed"};
+    const tx_hash = push_tx(signed_tx);
+    return { message : "transaction pushed", tx_hash: tx_hash};
   });
 }
 
