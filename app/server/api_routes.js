@@ -1,7 +1,7 @@
 'use strict';
 
 import bodyParser from 'body-parser';
-import { healthcheck, tx_push } from './api_routes_handler.js'
+import { healthcheck, tx_build, tx_push } from './api_routes_handler.js'
 
 Picker.middleware( bodyParser.json() );
 Picker.middleware( bodyParser.urlencoded( { extended: false } ) );
@@ -26,4 +26,5 @@ const DELETE = Picker.filter(function(request, response) {
 GET.route('/api/v1/healthcheck', healthcheck);
 
 // Transactions
+POST.route('/api/v1/tx/build', tx_build);
 POST.route('/api/v1/tx/push', tx_push);
