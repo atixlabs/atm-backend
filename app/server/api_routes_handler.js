@@ -1,6 +1,7 @@
 'use strict';
 
 import { HTTP } from 'meteor/http'
+import { run } from './tx_helper.js'
 
 function toJson(res, buildResultFn) {
   try {
@@ -45,6 +46,7 @@ function tx_build(params, req, res) {
     if (!from || !to || !amount) {
       throw new Meteor.Error(403, 'Malformed request body, expecting {from, to, amount}');
     }
+    run()
     return { raw_tx : `This is a Tx for ${JSON.stringify(req.body)}` };
   });
 }

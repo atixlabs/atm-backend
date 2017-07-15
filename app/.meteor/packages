@@ -21,3 +21,4 @@ accounts-password@1.4.0
 accounts-ui@1.1.9
 meteorhacks:picker@1.0.3
 http@1.2.12
+mjbecze:ethereumjs-tx
