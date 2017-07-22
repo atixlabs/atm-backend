@@ -1,5 +1,5 @@
 <template name="mainLayout">
-  {{#AdminLTE skin="green"}}
+  {{#AdminLTE skin="green" fixed="true"}}
   <div class="wrapper">
 
     {{> mainHeader }} 
@@ -8,10 +8,8 @@
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-      {{> Template.dynamic template=content}}
+      {{> Template.dynamic template=content data=data}}
     </div>
-    <!-- /.content-wrapper -->
-    {{> footer}}
   </div>
   {{/AdminLTE}}
 </template>

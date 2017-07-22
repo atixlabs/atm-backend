@@ -115,4 +115,12 @@ Users.addOneSignalId = function(userId, oneSignalId) {
   Users.update({ _id: userId }, { $set: { 'appData.oneSignalId': oneSignalId } });
 };
 
+if(Meteor.isServer) {
+  Meteor.publish('userById', function(userId) {
+    check(userId, String);
+    return Users.find({_id: userId});
+  });
+}
+
+
 export default Users;

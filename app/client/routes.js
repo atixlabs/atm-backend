@@ -12,10 +12,19 @@ import '../imports/client/layout/main-layout.js';
 
 import '../imports/client/pages/dashboard.html';
 import '../imports/client/pages/dashboard.js';
+import '../imports/client/pages/user_profile.js';
+import '../imports/collections/users.js';
 
 FlowRouter.route('/', {
-  name: 'main',
+  name: 'dashboard',
   action: function() {
     BlazeLayout.render('mainLayout', {content: 'dashboard'});
+  }
+});
+
+FlowRouter.route('/user/:id', {
+  name: 'userProfile',
+  action: function(params) {
+    BlazeLayout.render('mainLayout', {content: 'userProfile', data: {id: params.id}});
   }
 });
