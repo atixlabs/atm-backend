@@ -2,6 +2,7 @@
 
 import { HTTP } from 'meteor/http'
 import { build_tx, push_tx } from '../imports/server/blockchain_tools'
+import Users from '../imports/collections/users';
 
 function toJson(res, buildResultFn) {
   try {
@@ -65,8 +66,24 @@ function tx_push(params, req, res) {
   });
 }
 
+function user_get(params, req, res) {
+
+  console.log(`user_get`);
+
+  toJson(res, () => {
+    const address = params.address;
+    console.log(`user_get by address ${address}`);
+    if (!address) {
+      throw new Meteor.Error(403, 'Missing address');
+    }
+    const user = Users.findByAddress(address);
+    return user;
+  });
+}
+
 module.exports = {
   healthcheck: healthcheck,
   tx_push: tx_push,
-  tx_build: tx_build
+  tx_build: tx_build,
+  user_get: user_get
 }
