@@ -8,7 +8,7 @@ const headers = {
   'Authorization': `Basic ${Meteor.settings.oneSignal.API_AUTH}`
 };
 
-oneSignalAPI.notifyByPlayerId = function(missionId, playerIds, message) {
+oneSignalAPI.notifyByPlayerId = function(requestId, playerIds, message) {
   const options = {};
   const buttons = [];
 
