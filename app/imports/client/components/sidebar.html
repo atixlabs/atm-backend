@@ -6,8 +6,8 @@
       <!-- Sidebar user panel -->
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu" data-widget="tree">
-        {{> menuItem text="Dashboard" routeName="dashboard" href="/"}}
-        {{> menuItem text="Users" routeName="usersList" href="/users"}}
+        {{> menuItem text="Dashboard" routeName="dashboard" href="/" icon="fa-dashboard"}}
+        {{> menuItem text="Users" routeName="userList" href="/users" icon="fa-users"}}
       </ul>
     </section>
     <!-- /.sidebar -->
@@ -17,7 +17,7 @@
 <template name="menuItem">
   <li class="{{activeClass}} treeview">
     <a href={{href}}>
-      <i class="fa fa-dashboard"></i> <span>{{text}}</span>
+      <i class="fa {{icon}}"></i> <span>{{text}}</span>
       <span class="pull-right-container">
         <i class="fa fa-angle-left pull-right"></i>
       </span>

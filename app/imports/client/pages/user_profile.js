@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 import './user_profile.html';
 import Users from '../../collections/users.js';
 import TransferEvents from '../../collections/transfer_events.js';
@@ -25,9 +27,21 @@ TemplateController('userData', {
       blackbox: true
     }
   }),
+  state: {
+    tokens: "?",
+    userRequests: "?"
+  },
   onCreated() {
     this.autorun(() => {
       Meteor.subscribe('eventsByAddress', `0x${this.props.user.address}`);
+      Meteor.call('balance', this.props.user._id, (err, res) => {
+        if (err) console.log(err);
+        else this.state.tokens = res;
+      });
+      Meteor.call('requestsByUser', this.props.user._id, (err, res) => {
+        if (err) console.log(err);
+        else this.state.userRequests = res;
+      });
     });
   },
   helpers: {
@@ -52,6 +66,12 @@ TemplateController('userData', {
         useFontAwesome: true,
         group: 'client'
       };
-    }
+    },
+    address() {
+      return `0x${this.props.user.address}`;
+    },
+    birthdate() {
+      return moment(this.props.user.personalInformation.birthdate).format("LL");
+    },
   }
 });
