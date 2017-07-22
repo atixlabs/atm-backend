@@ -63,8 +63,8 @@
             <h3 class="box-title">Latest transactions</h3>
           </div>
           <!-- /.box-header -->
-          <div class="box-body table-responsive no-padding">
-            {{> reactiveTable collection=transferEvents}}
+          <div class="box-body no-padding">
+            {{> reactiveTable class="table table-bordered table-hover" collection=requests settings=requestsSettings}}
           </div>
           <!-- /.box-body -->
         </div>
