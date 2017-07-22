@@ -60,11 +60,39 @@ function tx_push(params, req, res) {
   console.log(`txs_push`);
 
   toJson(res, () => {
-    const { signed_tx, from, to } = req.body;
-    if (!signed_tx) {
+    const { signed_tx, from, to, amount } = req.body;
+    if (!signed_tx || !from || !to || !amount) {
       throw new Meteor.Error(403, 'Malformed request body, missing signed_tx');
     }
+    const user = Users.findByAddress(from);
+    if(!user){
+      throw new Meteor.Error(400, `No User found for address: ${from}`);
+    }
+    const request = Requests.findOne({ requestUserId: user._id, state: 'pending'});
+    if(!request){
+      throw new Meteor.Error(400, `No pending request found for user with address: ${from}`);
+    }
+
     const tx_hash = push_tx(signed_tx);
+    if(tx_hash){
+      const result = Requests.update({ _id : request._id },
+          { $set: { state : 'confirmed',
+            transactionData: {
+              transactionHash: tx_hash,
+              senderAddress: from,
+              receiverAddress: to,
+              amount: amount,
+              state: 'emitted'
+            }
+          }}
+      );
+      console.error("failed to update request");
+      if (result == 0) {
+        throw new Meteor.Error(400, `Error updating the Request ${result}, req_id: ${request._id}`);
+      }
+    } else {
+      throw new Meteor.Error(400, `Error pushing the Transaction`);
+    }
     return { message : "transaction pushed", tx_hash: tx_hash};
   });
 }

@@ -3,6 +3,10 @@ import { Mongo } from 'meteor/mongo';
 Requests = new Mongo.Collection('requests');
 
 const transactionData = new SimpleSchema({
+  transactionHash: {
+    type: String,
+    optional: true,
+  },
   transactionId: {
     type: String,
     optional: true,
