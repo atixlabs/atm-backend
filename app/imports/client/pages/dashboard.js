@@ -44,7 +44,7 @@ TemplateController('dashboard', {
         fields: [
           { key: 'createdAt', label: 'Created At', fn: (it) => { return moment(it).format('MM-DD-YYYY HH:mm');}},
           { key: 'requestedAmount', label: 'Amount'},
-          { key: 'state', label: 'State'}
+          { key: 'state', label: 'State' }
         ]
       }
     }

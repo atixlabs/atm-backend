@@ -20,7 +20,12 @@ TemplateController('userList', {
         fields: [
           { key: 'createdAt', label: 'Created At', fn: (it) => { return moment(it).format('MM-DD-YYYY HH:mm');}},
           { key: 'email', label: 'Email'},
-          { key: 'address', label: 'Address'}
+          { key: 'address', label: 'Address'},
+          { key: '_id', label: '', fn: (value) => {
+            console.log(value);
+            const href = FlowRouter.path("/user/" + value);
+            return new Spacebars.SafeString("<a href=" + href + ">View</a>");
+          }}
         ]
       }
     }
