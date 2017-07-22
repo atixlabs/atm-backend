@@ -30,3 +30,4 @@ space:template-controller
 kadira:flow-router
 kadira:blaze-layout
 aslagle:reactive-table
+sacha:spin
