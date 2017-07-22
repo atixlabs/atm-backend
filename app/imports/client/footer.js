@@ -1,0 +1,3 @@
+TemplateController('footer', {
+  
+});

@@ -1,0 +1,17 @@
+<template name="mainLayout">
+  {{#AdminLTE skin="green"}}
+  <div class="wrapper">
+
+    {{> mainHeader }} 
+    
+    {{> sidebar }}
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      {{> Template.dynamic template=content}}
+    </div>
+    <!-- /.content-wrapper -->
+    {{> footer}}
+  </div>
+  {{/AdminLTE}}
+</template>
