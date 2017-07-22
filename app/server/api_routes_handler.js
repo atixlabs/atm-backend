@@ -4,6 +4,7 @@ import { HTTP } from 'meteor/http';
 import { build_tx, push_tx, transfer_tokens, get_balance } from '../imports/server/blockchain_tools';
 import Users from '../imports/collections/users';
 import TransferEvents from '../imports/collections/transfer_events';
+import Requests from '../imports/collections/requests';
 import BankAPI from './bank_api';
 
 function toJson(res, buildResultFn) {
@@ -124,10 +125,64 @@ function user_balance(params, req, res) {
   });
 }
 
+function req_emit(params, req, res) {
+
+  console.log(`req_emit`);
+
+  toJson(res, () => {
+    const { address, amount , location } = req.body;
+    if (!address || !amount) {
+      throw new Meteor.Error(403, 'Malformed request body, expected { address, amount}');
+    }
+    const user = Users.findByAddress(address);
+    if (!user) {
+      throw new Meteor.Error(400, `No user found with address: ${address}`);
+    }
+    //TODO: this should be validated by the bank API
+    if(amount > user.appData.maxAllowedWithdrawal){
+      throw new Meteor.Error(400, `Cannot request more than : ${user.appData.maxAllowedWithdrawal}`);
+    }
+    const requestId = Requests.insert({
+      requestUserId: user._id,
+      requestedAmount: amount
+    });
+    //TODO: emit push notifications to retailers
+
+    return { message : "request emitted", requestId: requestId};
+  });
+}
+
+
+function req_list(params, req, res) {
+
+  console.log(`req_list`);
+
+  toJson(res, () => {
+    const address = params.address;
+    console.log(`req_list for address ${address}`);
+    if (!address) {
+      throw new Meteor.Error(403, 'Missing address');
+    }
+    const user = Users.findByAddress(address);
+    if (!user) {
+      throw new Meteor.Error(400, `No user found with address: ${address}`);
+    }
+    const requestList = Requests.find(
+        { $or: [
+          { requestUserId: user._id} ,
+          { retailUserId: user._id}]
+        }).fetch();
+
+    return requestList;
+  });
+}
+
 module.exports = {
   healthcheck: healthcheck,
   tx_push: tx_push,
   tx_build: tx_build,
   user_get: user_get,
-  user_balance: user_balance
-}
+  user_balance: user_balance,
+  req_emit: req_emit,
+  req_list: req_list
+};
