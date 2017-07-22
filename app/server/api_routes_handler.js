@@ -18,7 +18,7 @@ function toJson(res, buildResultFn) {
     res.setHeader('Content-Type', 'application/json');
     res.statusCode = 500;
     res.end(JSON.stringify({
-      error: exception.reason,
+      error: exception,
       message: exception.details,
       errorType: exception.errorType
     }));
@@ -69,6 +69,51 @@ function tx_push(params, req, res) {
   });
 }
 
+function user_register(params, req, res) {
+
+  console.log(`user_register`);
+
+  toJson(res, () => {
+    const { username, password, address, oneSignalId } = req.body;
+
+    if (!username || !password || !address || !oneSignalId) {
+      throw new Meteor.Error(403, 'Missing data, expected { username, password, address, oneSignalId}');
+    }
+    const user = Users.findByAddress(address);
+    if(user){
+      throw new Meteor.Error(400, `User already register for address: ${address}`);
+    }
+
+    const bankUserData = BankAPI.getUserData({username: username, password: password});
+    const newUserId = Users.insert({
+      "address" : address,
+      "email" : bankUserData.email,
+      "personalInformation" : {
+        "name": bankUserData.name,
+        "fullName": bankUserData.name + " " + bankUserData.surname,
+        "phone": bankUserData.phone,
+        "birthdate": bankUserData.birthdate
+      },
+      "appSettings" : {},
+      "appData" : {
+        "oneSignalId": oneSignalId,
+        "maxAllowedWithdrawal" : bankUserData.maxAllowedWithdrawal
+      }
+    });
+
+	// If user has never received tokens from backend, it means it's a new account and needs maxAllowedWithdrawal tokens
+	const accountInitializationEvent = TransferEvents.findOne(
+        {from: Meteor.settings.backendWallet.address, to: address});
+	if (!accountInitializationEvent) {
+	  console.log(`User ${address} has never received initial tokens, granting him ${bankUserData.maxAllowedWithdrawal}`);
+	  transfer_tokens(Meteor.settings.backendWallet.address, address, bankUserData.maxAllowedWithdrawal);
+	  console.log(`User ${address} received maxAllowedWithrawl tokens`);
+	}
+
+    return Users.findOne(newUserId);
+  });
+}
+
 function user_get(params, req, res) {
 
   console.log(`user_get`);
@@ -81,32 +126,7 @@ function user_get(params, req, res) {
     }
     const user = Users.findByAddress(address);
     if(!user){
-      // TODO: this should be done on register instead
-      const bankUserData = BankAPI.getUserData(/* user credentials*/);
-      const newUserId = Users.insert({
-        "address" : address,
-        "email" : bankUserData.email,
-        "personalInformation" : {
-          "name": bankUserData.name,
-          "fullName": bankUserData.name + " " + bankUserData.surname,
-          "phone": bankUserData.phone,
-          "birthdate": bankUserData.birthdate
-        },
-        "appSettings" : {},
-        "appData" : {
-          "maxAllowedWithdrawal" : bankUserData.maxAllowedWithdrawal
-        }
-      })
-
-      // If user has never received tokens from backend, it means it's a new account and needs maxAllowedWithdrawal tokens
-      const accountInitializationEvent = TransferEvents.findOne({from: Meteor.settings.backendWallet.address, to: address});
-      if (!accountInitializationEvent) {
-        console.log(`User ${address} has never received initial tokens, granting him ${bankUserData.maxAllowedWithdrawal}`);
-        transfer_tokens(Meteor.settings.backendWallet.address, address, bankUserData.maxAllowedWithdrawal);
-        console.log(`User ${address} received maxAllowedWithrawl tokens`);
-      }
-
-      return Users.findOne(newUserId);
+      throw new Meteor.Error(400, 'User not found, try registering first');
     }
     return user;
   });
@@ -181,6 +201,7 @@ module.exports = {
   healthcheck: healthcheck,
   tx_push: tx_push,
   tx_build: tx_build,
+  user_register: user_register,
   user_get: user_get,
   user_balance: user_balance,
   req_emit: req_emit,

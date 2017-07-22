@@ -1,10 +1,10 @@
 'use strict';
 
 import bodyParser from 'body-parser';
-import {
-  healthcheck,
+
+import {  healthcheck,
   tx_build, tx_push,
-  user_get, user_balance,
+  user_register, user_get, user_balance,
   req_emit, req_list } from './api_routes_handler.js'
 
 Picker.middleware( bodyParser.json() );
@@ -36,6 +36,7 @@ POST.route(BASE + '/tx/build', tx_build);
 POST.route(BASE + '/tx/push', tx_push);
 
 //User
+POST.route(BASE + '/user/register', user_register);
 GET.route(BASE + '/user/:address', user_get);
 GET.route(BASE + '/user/:address/balance', user_balance);
 GET.route(BASE + '/user/:address/requests', req_list);
