@@ -1,0 +1,62 @@
+<template name="menu">
+    <style type="text/css">
+        *{
+            padding:auto;
+            margin:auto;
+            text-align:center;
+        }
+        .atm-btn{
+            height: 80px;
+            min-width: 160px;
+        }
+
+        .row{
+            margin-top: 40px;
+        }
+
+        .container{
+            border-style: solid;
+            border-color: darkgray;
+            margin-top: 40px;
+            width:600px;
+            background-color:#f5f5f5;
+            display:block;
+            height:600px;
+        }
+    </style>
+    <div class='container'>
+        <h2>ATM Simulator</h2>
+        <div class="row">
+            <div class='col-md-6'>
+                <button class="btn btn-info atm-btn">Transfer</button>
+            </div>
+            <div class='col-md-6'>
+                <button class="btn btn-info atm-btn">Withdrawal</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class='col-md-6'>
+                <button class="btn btn-info atm-btn">Account Balance</button>
+            </div>
+            <div class='col-md-6'>
+                <button class="btn btn-info atm-btn">PIN Change</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class='col-md-6'>
+                <button class="btn btn-info atm-btn">Bill Pay</button>
+            </div>
+            <div class='col-md-6'>
+                <button class="btn btn-info atm-btn">Deposit</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class='col-md-6'>
+                <button class="btn btn-info atm-btn">Statements</button>
+            </div>
+            <div class='col-md-6'>
+                <button id="reverse-atm" class="btn btn-info atm-btn">Reverse ATM</button>
+            </div>
+        </div>
+    </div>
+</template>

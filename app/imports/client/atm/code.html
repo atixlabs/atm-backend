@@ -1,0 +1,49 @@
+<template name="code">
+    <style type="text/css">
+        *{
+            padding:auto;
+            margin:auto;
+            text-align:center;
+        }
+        .row {
+            margin-top: 20px;
+        }
+        .code {
+
+        }
+    </style>
+    <div class='container'>
+        <h2>ATM Simulator</h2>
+        <hr>
+        <h4>Your deposit has been confirmed</h4>
+        <div class="row ">
+            <label> > Deposit: 1000</label>
+            <br>
+            <label> > Tokkens: 1010</label>
+        </div>
+        <hr>
+        <div class="row ">
+            <h3>Your code is:</h3>
+
+            <h1 class="code jumbotron"></h1>
+        </div>
+        <div class="row">
+            <div class='col-md-12'>
+                <button id="go-to-menu" class="btn btn-info atm-btn">Finalize</button>
+            </div>
+        </div>
+    </div>
+    <script type="application/javascript">
+        function getRandomCode() {
+            var text = "";
+            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+            for (var i = 0; i < 6; i++)
+                text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+            return text;
+        }
+        var code = getRandomCode();
+        $('.code').text(code)
+    </script>
+</template>
