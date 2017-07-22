@@ -1,0 +1,31 @@
+<template name="userList">
+  <!-- Content Header (Page header) -->
+  {{#unless Template.subscriptionsReady}}
+    {{> spinner}}
+  {{else}}
+
+  <!-- Main content -->
+  <section class="content">
+    <!-- Main row -->
+    <div class="row">
+      <!-- Left col -->
+      <section class="col-xs-12">
+        <div class="box">
+          <div class="box-header">
+            <h3 class="box-title">Users</h3>
+          </div>
+          <!-- /.box-header -->
+          <div class="box-body no-padding">
+            {{> reactiveTable class="table table-bordered table-hover" settings=usersSettings}}
+          </div>
+          <!-- /.box-body -->
+        </div>
+
+      </section>
+    </div>
+    <!-- /.row (main row) -->
+
+  </section>
+  <!-- /.content -->
+{{/unless}}
+</template>

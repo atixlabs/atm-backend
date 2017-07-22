@@ -15,10 +15,21 @@ import '../imports/client/pages/dashboard.js';
 import '../imports/client/pages/user_profile.js';
 import '../imports/collections/users.js';
 
+import '../imports/client/pages/user_list.html';
+import '../imports/client/pages/user_list.js';
+
 FlowRouter.route('/', {
   name: 'dashboard',
   action: function() {
     BlazeLayout.render('mainLayout', {content: 'dashboard'});
+  }
+});
+
+
+FlowRouter.route('/users', {
+  name: 'userList',
+  action: function() {
+    BlazeLayout.render('mainLayout', {content: 'userList'});
   }
 });
 
