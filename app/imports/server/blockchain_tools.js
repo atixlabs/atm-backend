@@ -80,7 +80,7 @@ export function transfer_tokens(from, to, amount) {
 }
 
 export function get_balance(address) {
-  return Promise.await(atm.balanceOf(address));
+  return Promise.await(atm.balanceOf(util.addHexPrefix(address)));
 }
 
 export function get_historic_events(from, to = "latest", cb) {

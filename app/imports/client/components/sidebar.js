@@ -11,6 +11,10 @@ TemplateController('menuItem', {
     },
     routeName: {
       type: String
+    },
+    icon: {
+      type: String,
+      defaultValue: " "
     }
   }),
   helpers: {
