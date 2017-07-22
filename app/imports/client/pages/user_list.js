@@ -19,6 +19,7 @@ TemplateController('userList', {
         showFilter: true,
         fields: [
           { key: 'createdAt', label: 'Created At', fn: (it) => { return moment(it).format('MM-DD-YYYY HH:mm');}},
+          { key: 'personalInformation.fullName', label: 'Name'},
           { key: 'email', label: 'Email'},
           { key: 'address', label: 'Address'},
           { key: '_id', label: '', fn: (value) => {
