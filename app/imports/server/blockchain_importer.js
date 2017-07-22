@@ -1,6 +1,4 @@
-import {
-  TransferEvents
-} from '../api/transfer_events';
+import TransferEvents from '../collections/transfer_events';
 import {
   get_historic_events,
   watch_events

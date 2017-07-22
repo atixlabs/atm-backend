@@ -1,8 +1,9 @@
 'use strict';
 
-import { HTTP } from 'meteor/http'
-import { build_tx, push_tx } from '../imports/server/blockchain_tools'
+import { HTTP } from 'meteor/http';
+import { build_tx, push_tx, transfer_tokens, get_balance } from '../imports/server/blockchain_tools';
 import Users from '../imports/collections/users';
+import TransferEvents from '../imports/collections/transfer_events';
 import BankAPI from './bank_api';
 
 function toJson(res, buildResultFn) {
@@ -95,9 +96,31 @@ function user_get(params, req, res) {
           "maxAllowedWithdrawal" : bankUserData.maxAllowedWithdrawal
         }
       })
+
+      // If user has never received tokens from backend, it means it's a new account and needs maxAllowedWithdrawal tokens
+      const accountInitializationEvent = TransferEvents.findOne({from: Meteor.settings.backendWallet.address, to: address});
+      if (!accountInitializationEvent) {
+        console.log(`User ${address} has never received initial tokens, granting him ${bankUserData.maxAllowedWithdrawal}`);
+        transfer_tokens(Meteor.settings.backendWallet.address, address, bankUserData.maxAllowedWithdrawal);
+        console.log(`User ${address} received maxAllowedWithrawl tokens`);
+      }
+
       return Users.findOne(newUserId);
     }
     return user;
+  });
+}
+
+function user_balance(params, req, res) {
+  console.log(`user_balance`);
+
+  toJson(res, () => {
+    const address = params.address;
+    console.log(`user_balance by address ${address}`);
+    if (!address) {
+      throw new Meteor.Error(403, 'Missing address');
+    }
+    return get_balance(address);
   });
 }
 
@@ -105,5 +128,6 @@ module.exports = {
   healthcheck: healthcheck,
   tx_push: tx_push,
   tx_build: tx_build,
-  user_get: user_get
+  user_get: user_get,
+  user_balance: user_balance
 }
