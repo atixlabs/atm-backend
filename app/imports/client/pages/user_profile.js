@@ -33,6 +33,7 @@ TemplateController('userData', {
   },
   onCreated() {
     this.autorun(() => {
+      Meteor.subscribe('requests.all');
       Meteor.subscribe('eventsByAddress', `0x${this.props.user.address}`);
       Meteor.call('balance', this.props.user._id, (err, res) => {
         if (err) console.log(err);
@@ -66,6 +67,33 @@ TemplateController('userData', {
         useFontAwesome: true,
         group: 'client'
       };
+    },
+    userRequests() {
+      return Requests.find({
+        requestUserId: this.props.user._id
+      });
+    },
+
+    requestsSettings() {
+      return {
+        rowsPerPage: 20,
+        fields: [{
+            key: 'createdAt',
+            label: 'Created At',
+            fn: (it) => {
+              return moment(it).format('MM-DD-YYYY HH:mm');
+            }
+          },
+          {
+            key: 'requestedAmount',
+            label: 'Amount'
+          },
+          {
+            key: 'state',
+            label: 'State'
+          }
+        ]
+      }
     },
     address() {
       return `0x${this.props.user.address}`;

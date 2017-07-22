@@ -35,7 +35,7 @@ TemplateController('dashboard', {
       return this.subsReady();
     },
     requests() {
-      return Requests.find()
+      return Requests.find();
     },
     requestsSettings() {
       return {

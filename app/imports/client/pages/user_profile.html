@@ -66,11 +66,12 @@
       <div class="col-md-8">
         <div class="nav-tabs-custom">
           <ul class="nav nav-tabs">
-            <li class="active"><a href="#activity" data-toggle="tab">Requests</a></li>
+            <li class="active"><a href="#requests" data-toggle="tab">Requests</a></li>
             <li><a href="#tokenEvents" data-toggle="tab">Token Events</a></li>
           </ul>
           <div class="tab-content">
-            <div class="active tab-pane" id="activity">
+            <div class="active tab-pane" id="requests">
+              {{> reactiveTable class="table table-bordered table-hover" collection=userRequests settings=requestsSettings}}
             </div>
             <div class="tab-pane" id="tokenEvents">
               <div class="row">
