@@ -26,8 +26,8 @@ const transactionData = new SimpleSchema({
   state: {
     type: String,
     optional: true,
-    allowedValues: ['emitted', 'confirmed', 'inFork', 'invalid'],
-    defaultValue: 'emitted'
+    allowedValues: ['empty', 'emitted', 'confirmed', 'inFork', 'invalid'],
+    defaultValue: 'empty'
   },
   blockId: {
     type: String,
@@ -52,7 +52,7 @@ const schema = new SimpleSchema([{
     type: Number,
   },
   retailUserId: {
-    type: Number,
+    type: String,
     optional: true,
   },
   description: {

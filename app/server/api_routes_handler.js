@@ -172,7 +172,6 @@ function req_emit(params, req, res) {
   });
 }
 
-
 function req_list(params, req, res) {
 
   console.log(`req_list`);
@@ -192,8 +191,37 @@ function req_list(params, req, res) {
           { requestUserId: user._id} ,
           { retailUserId: user._id}]
         }).fetch();
-
+    console.log(requestList.length);
+    console.log('asdfvret', requestList[0]._id);
     return requestList;
+  });
+}
+
+function req_accept(params, req, res) {
+
+  console.log(`req_accept`);
+
+  toJson(res, () => {
+    const { address, requestId } = req.body;
+    if (!address || !requestId) {
+      throw new Meteor.Error(403, 'Malformed request body, expected { address, requestId}');
+    }
+    const user = Users.findByAddress(address);
+    if (!user) {
+      throw new Meteor.Error(400, `No user found with address: ${address}`);
+    }
+    const request = Requests.find(requestId);
+
+    //TODO: validate with bank api/contract if this user can fulfill this order
+
+    const result = Requests.update({ _id : requestId },
+        { $set: { state : 'pending', retailUserId : user._id }}
+    );
+    if (result == 0) {
+      throw new Meteor.Error(400, `No request found with id: ${requestId}`);
+    }
+    console.log(`req_accept: request[${requestId}}] accepted by User with address ${address}`);
+    return { message : "request accepted" };
   });
 }
 
@@ -205,5 +233,6 @@ module.exports = {
   user_get: user_get,
   user_balance: user_balance,
   req_emit: req_emit,
-  req_list: req_list
+  req_list: req_list,
+  req_accept: req_accept
 };
