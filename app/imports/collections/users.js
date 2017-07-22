@@ -25,9 +25,14 @@ const userPersonalInformation = new SimpleSchema({
     type: Date,
     optional: true,
   },
+  phone: {
+    type: String,
+    optional: true,
+  },
   gender: {
     type: String,
     allowedValues: ['male', 'female'],
+    optional: true
   },
   legalPersonalId: {
     type: Number,

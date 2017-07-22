@@ -3,6 +3,7 @@
 import { HTTP } from 'meteor/http'
 import { build_tx, push_tx } from '../imports/server/blockchain_tools'
 import Users from '../imports/collections/users';
+import BankAPI from './bank_api';
 
 function toJson(res, buildResultFn) {
   try {
@@ -77,6 +78,25 @@ function user_get(params, req, res) {
       throw new Meteor.Error(403, 'Missing address');
     }
     const user = Users.findByAddress(address);
+    if(!user){
+      // TODO: this should be done on register instead
+      const bankUserData = BankAPI.getUserData(/* user credentials*/);
+      const newUserId = Users.insert({
+        "address" : address,
+        "email" : bankUserData.email,
+        "personalInformation" : {
+          "name": bankUserData.name,
+          "fullName": bankUserData.name + " " + bankUserData.surname,
+          "phone": bankUserData.phone,
+          "birthdate": bankUserData.birthdate
+        },
+        "appSettings" : {},
+        "appData" : {
+          "maxAllowedWithdrawal" : bankUserData.maxAllowedWithdrawal
+        }
+      })
+      return Users.findOne(newUserId);
+    }
     return user;
   });
 }
