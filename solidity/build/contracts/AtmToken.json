@@ -188,8 +188,37 @@
       "links": {},
       "address": "0xc17e1751b59a287dd2a25675676d06624e6d6f1e",
       "updated_at": 1500133810942
+    },
+    "1500746132213": {
+      "events": {
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Transfer",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xc17e1751b59a287dd2a25675676d06624e6d6f1e",
+      "updated_at": 1500746393949
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1500133810942
+  "updated_at": 1500746393949
 }
