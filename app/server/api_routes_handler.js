@@ -219,8 +219,14 @@ function req_list(params, req, res) {
           { requestUserId: user._id} ,
           { retailUserId: user._id}]
         }).fetch();
-    console.log(requestList.length);
-    console.log('asdfvret', requestList[0]._id);
+
+    // Add user data if retailUserId
+    _.each(requestList, (it)=>{
+      if(it.state === 'pending'){
+        it.retailUser = Users.findOne(it.retailUserId);
+      }
+    })
+
     return requestList;
   });
 }
