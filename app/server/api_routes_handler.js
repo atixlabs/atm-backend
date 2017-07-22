@@ -6,6 +6,7 @@ import Users from '../imports/collections/users';
 import TransferEvents from '../imports/collections/transfer_events';
 import Requests from '../imports/collections/requests';
 import BankAPI from './bank_api';
+import oneSignalAPI from '../imports/server/onesignal';
 
 function toJson(res, buildResultFn) {
   try {
@@ -194,7 +195,21 @@ function req_emit(params, req, res) {
       requestUserId: user._id,
       requestedAmount: amount
     });
-    //TODO: emit push notifications to retailers
+
+    const oneSignalIds = [];
+    const allusers = Users.find().fetch()
+    _.each(allusers, (u) => {
+        if (user._id !== u._id && u.appData && u.appData.oneSignalId) {
+        console.log('oneSignalIds.push', u._id)
+        oneSignalIds.push(u.appData.oneSignalId);
+      }
+    });
+
+    if (oneSignalIds.length === 0) {
+      console.error('no user to emit')
+    }
+
+    oneSignalAPI.notifyByPlayerId(requestId, oneSignalIds, 'New Request in your area!');
 
     return { message : "request emitted", requestId: requestId};
   });
@@ -255,6 +270,12 @@ function req_accept(params, req, res) {
       throw new Meteor.Error(400, `No request found with id: ${requestId}`);
     }
     console.log(`req_accept: request[${requestId}}] accepted by User with address ${address}`);
+
+    //Sed notification to reqiester
+    const requestUser = Users.findOne(request.requestUserId);
+    const oneSignalIds = [requestUser.appData.oneSignalId];
+    oneSignalAPI.notifyByPlayerId(requestId, oneSignalIds, 'Your Request was confirmed!');
+
     return { message : "request accepted" };
   });
 }

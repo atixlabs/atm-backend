@@ -9,5 +9,10 @@
   "tokenTxOptions": {
     "value": 0,
     "gasLimit": 47123880000
+  },
+  "oneSignal": {
+    "APP_ID": "ca2cc0dd-cf53-4882-a0ca-c18b95fa9810",
+    "API_AUTH": "ZGQ1NjM5MzgtMmJjMS00NjVlLThhYzgtMWU2ODQ4NWYwYTA3",
+    "API_URL": "https://onesignal.com/api/v1/notifications"
   }
 }
