@@ -1,1 +1,0 @@
-TemplateController('samplePage', {});

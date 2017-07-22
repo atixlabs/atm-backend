@@ -1,0 +1,7 @@
+TemplateController('dashboard', {
+  helpers: {
+    transferEvents() {
+      
+    }
+  }
+});
