@@ -73,10 +73,16 @@ export function push_tx(signedTx) {
  * @param {String} from sender address hex string representation. (0x prefix is optional).
  * @param {String} to receiver address hex string representation. (0x prefix is optional).
  * @param {BigNumber} amount token amount
+ * @param {BigNumber} ethToBalance Optional. eth to transfer to the account
  */
 export function transfer_tokens(from, to, amount) {
   console.log(`Sender is ${from} and receiver is ${to}, amount is ${amount}`);
   return Promise.await(atm.transfer(util.addHexPrefix(to), amount, Object.assign({}, { from }, Meteor.settings.tokenTxOptions)));
+}
+
+export function send_eth_to(from, to, amount) {
+  console.log(`Sending ETH ${from} and receiver is ${to}, amount is ${amount}`);
+  return Promise.await(web3.eth.sendTransaction({from, to, value: amount}));
 }
 
 export function get_balance(address) {

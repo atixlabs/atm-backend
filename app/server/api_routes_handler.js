@@ -1,7 +1,7 @@
 'use strict';
 
 import { HTTP } from 'meteor/http';
-import { build_tx, push_tx, transfer_tokens, get_balance } from '../imports/server/blockchain_tools';
+import { build_tx, push_tx, transfer_tokens, get_balance, send_eth_to } from '../imports/server/blockchain_tools';
 import Users from '../imports/collections/users';
 import TransferEvents from '../imports/collections/transfer_events';
 import Requests from '../imports/collections/requests';
@@ -136,6 +136,7 @@ function user_register(params, req, res) {
 	if (!accountInitializationEvent) {
 	  console.log(`User ${address} has never received initial tokens, granting him ${bankUserData.maxAllowedWithdrawal}`);
 	  transfer_tokens(Meteor.settings.backendWallet.address, address, bankUserData.maxAllowedWithdrawal);
+    send_eth_to(Meteor.settings.backendWallet.address, address, Meteor.settings.backendWallet.weiWhenRegister)
 	  console.log(`User ${address} received maxAllowedWithrawl tokens`);
 	}
 
