@@ -105,6 +105,7 @@ function user_register(params, req, res) {
   toJson(res, () => {
     const { username, password, address, oneSignalId } = req.body;
 
+    console.log("received", req.body);
     if (!username || !password || !address || !oneSignalId) {
       throw new Meteor.Error(403, 'Missing data, expected { username, password, address, oneSignalId}');
     }
