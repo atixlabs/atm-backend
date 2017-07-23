@@ -29,7 +29,7 @@ TemplateController('dashboard', {
       const total = Requests.find().count();
       const confirmed = Requests.find({ state: "confirmed" }).count();
       if(total == 0) return '-';
-      return (confirmed / total) * 100;
+      return parseFloat((confirmed / total) * 100).toFixed(2);;
     },
     isLoading() {
       return this.subsReady();
