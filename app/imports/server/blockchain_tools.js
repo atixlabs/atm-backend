@@ -49,7 +49,7 @@ export function build_tx(from, to, amount) {
   // Create transaction options, this should probably be in a settings file.
   const txOptions = Object.assign({}, {
     to: atm.address,
-    gasPrice: web3.eth.gasPrice,
+    gasPrice: web3.eth.gasPrice.toNumber(),
     nonce: web3.eth.getTransactionCount(util.addHexPrefix(from)), // getting transaction count is the same as querying for latest nonce
   }, Meteor.settings.tokenTxOptions);
 
