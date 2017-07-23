@@ -21,9 +21,12 @@ TemplateController('userList', {
           { key: 'createdAt', label: 'Created At', fn: (it) => { return moment(it).format('MM-DD-YYYY HH:mm');}},
           { key: 'personalInformation.fullName', label: 'Name'},
           { key: 'email', label: 'Email'},
-          { key: 'address', label: 'Address'},
+          { key: 'address', label: 'Address', fn: (value) => {
+              const href = "http://staging.atixlabs.com:9923/account/" + value;
+              return new Spacebars.SafeString(`<a target="_blank" href="${href}">${value}</a>`);
+
+          }},
           { key: '_id', label: '', fn: (value) => {
-            console.log(value);
             const href = FlowRouter.path("/user/" + value);
             return new Spacebars.SafeString("<a href=" + href + ">View</a>");
           }}
