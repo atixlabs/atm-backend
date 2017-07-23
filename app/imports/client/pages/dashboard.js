@@ -43,8 +43,21 @@ TemplateController('dashboard', {
         showFilter: true,
         fields: [
           { key: 'createdAt', label: 'Created At', fn: (it) => { return moment(it).format('MM-DD-YYYY HH:mm');}},
+          { key: 'requestUserId', label: 'Sender', fn: (it) =>
+            { return Users.findOne(it).personalInformation.fullName;}
+          },
           { key: 'requestedAmount', label: 'Amount'},
-          { key: 'state', label: 'State' }
+          { key: 'state', label: 'State', fn: (it) =>
+            {
+              const lbl = {
+                created : 'default',
+                pending: 'info',
+                confirmed: 'success',
+                canceled: 'danger'
+              }
+              const desc = lbl[it];
+              return new Spacebars.SafeString(`<label class="label label-${desc}">${it}</label>`)}
+          },
         ]
       }
     }
